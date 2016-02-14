@@ -10,4 +10,5 @@ ENV NAME tomcat
 RUN mkdir /logs
 
 CMD /usr/sbin/tomcat start && tail -f /logs/catalina.out
+ADD *.war /usr/share/tomcat/webapps
 

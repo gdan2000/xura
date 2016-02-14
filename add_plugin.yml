@@ -1,0 +1,24 @@
+---
+
+- hosts: localhost
+  vars:
+   proj_dir: ~/projects
+   xura_dir: "{{proj_dir}}/xura"
+   pet_dir:  "{{proj_dir}}/petclinic"
+   xura_repo: https://github.com/gdan2000/xura.git
+   pet_repo: https://github.com/gdan2000/spring-petclinic.git
+  tasks:
+  
+  - name: Installing Git plugin
+    become: yes
+    become_method: sudo
+    get_url: url=https://updates.jenkins-ci.org/latest/git.hpi dest=/var/lib/jenkins/plugins
+
+  - name: setting permission on git plugin
+    become: yes
+    become_method: sudo
+    file: path=/var/lib/jenkins/plugins/git.hpi owner=jenkins group=jenkins
+
+  - name: restart jenkins
+    service: state=restarted name=jenkins enabled=yes
+
