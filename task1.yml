@@ -1,0 +1,32 @@
+---
+
+- hosts: localhost
+  vars:
+   proj_dir: ~/projects
+   xura_dir: "{{proj_dir}}/xura"
+   pet_dir:  "{{proj_dir}}/petclinic"
+   xura_repo: https://github.com/gdan2000/xura.git
+   pet_repo: https://github.com/gdan2000/spring-petclinic.git
+  tasks:
+  
+  - name: installing git package
+    become: yes
+    become_method: sudo
+    yum: name=git state=latest
+
+  - name: installing docker package
+    become: yes
+    become_method: sudo
+    yum: name=docker state=latest
+
+  - name: creating folders for my project
+    file: state=directory path={{item.dir}}
+    with_items:
+     - { dir: "{{xura_dir}}" }
+     - { dir: "{{pet_dir}}" }
+
+  - name: cloning projects from git
+    git: repo={{item.src}} dest={{item.dst}} update=no
+    with_items:
+     - { src: "{{xura_repo}}", dst: "{{xura_dir}}" }
+     - { src: "{{pet_repo}}", dst: "{{pet_dir}}" }
