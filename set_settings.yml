@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  vars:
+   artifactory_host: 172.31.0.42
+ 
+  tasks:
+  - name: set artifactory host
+    template: src=~/projects/xura/settings.j2 dest=~/projects/xura/settings.xml
