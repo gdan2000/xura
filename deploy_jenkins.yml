@@ -1,0 +1,31 @@
+---
+
+- hosts: localhost
+  vars:
+   dock_name: "ex2"
+   proj_dir: /home/ec2-user/projects
+   docker_dir: "{{proj_dir}}/docker"
+   pet_dir:  "{{proj_dir}}/petclinic"
+   docker_repo: https://github.com/gdan2000/docker.git
+   pet_repo: https://github.com/gdan2000/spring-petclinic.git
+   build_dir: "{{proj_dir}}/build_image"
+  tasks:
+  
+  - name: installing git package
+    become: yes
+    become_method: sudo
+    yum: name=git state=latest
+
+  - name: cloning projects from git
+    git: repo={{item.src}} dest={{item.dst}} update=no
+    with_items:
+     - { src: "{{docker_repo}}", dst: "{{docker_dir}}" }
+
+  - name: creating folders for my project
+    file: state=directory path={{build_dir}}
+
+  - name: put Dockerfile into build directory
+    copy: src={{docker_dir}}/Dockerfile dest={{build_dir}}
+
+  - name: build docker module
+    docker_image: path={{build_dir}} name={{dock_name}} state=build

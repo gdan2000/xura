@@ -1,0 +1,25 @@
+---
+
+- hosts: localhost
+
+  tasks:
+
+  - name: install docker py module
+    become: yes
+    become_method: sudo
+    pip: name=docker_py state=latest executable=/usr/local/bin/pip
+    
+  - name: build docker module
+    docker_image: path=/home/ec2-user/projects/docker name="ex2" state=build
+
+  - name: run image
+    docker:
+     name: example2
+     image: ex2
+     state: started
+     expose:
+     - 8080
+     ports:
+     - "9090:8080"
+    
+
